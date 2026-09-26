@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./backend-python
+    env_file:
+      - ./backend-python/.env
+    environment:
+      # Same-origin via the nginx proxy in production, so this can be tight.
+      - ALLOWED_ORIGINS=http://localhost:8080
+    volumes:
+      - policy_data:/app/data
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+volumes:
+  policy_data:

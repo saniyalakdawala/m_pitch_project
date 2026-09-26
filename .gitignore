@@ -1,0 +1,17 @@
+# Backend
+backend-python/venv/
+backend-python/__pycache__/
+backend-python/**/__pycache__/
+backend-python/.env
+backend-python/data/chunks_cache.json
+backend-python/data/uploads/*
+!backend-python/data/uploads/.gitkeep
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# OS/editor
+.DS_Store
+*.log
