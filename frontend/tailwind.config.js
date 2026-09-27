@@ -33,6 +33,15 @@ export default {
           500: "#996515", // understated gold only for audit badge
           100: "#FBF5E8",
         },
+        lightBlue: {
+          50: "#F2F9FD",
+          100: "#E3F3FB",
+          200: "#C8E9FA", // exact light blue
+          300: "#A8DEF7",
+          400: "#70C4EE",
+          border: "#B5E0F7",
+          DEFAULT: "#C8E9FA",
+        },
       },
       fontFamily: {
         serif: ["'Playfair Display'", "'Newsreader'", "Georgia", "serif"],

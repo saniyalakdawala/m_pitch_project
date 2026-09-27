@@ -33,7 +33,7 @@ export default function Navigation({
           {!isResultsPage ? (
             <>
               {/* Status */}
-              <div className="hidden sm:flex items-center gap-2 text-xs text-muted">
+              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EBF7FD] text-navy-900 border border-[#B5E0F7] text-[11px] font-medium">
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
                 <span className="font-sans">Vector Matcher Active</span>
               </div>
@@ -43,7 +43,7 @@ export default function Navigation({
                 <button
                   type="button"
                   onClick={onLoadSample}
-                  className="rounded border border-ivory-300 bg-white px-3.5 py-1.5 text-xs font-medium text-navy-900 hover:border-navy-900 transition shadow-subtle"
+                  className="rounded border border-ivory-300 bg-white px-3.5 py-1.5 text-xs font-medium text-navy-900 hover:border-[#A8DEF7] hover:bg-[#F0F9FD] transition shadow-subtle"
                 >
                   Load Sample Deck
                 </button>

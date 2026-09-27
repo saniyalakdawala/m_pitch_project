@@ -47,8 +47,93 @@ export default function GeneratePage({
         </p>
       </div>
 
+      {/* Light Blue Editorial Advisory Section (#C8E9FA) */}
+      <div className="my-12 md:my-16 w-full rounded-2xl border border-[#B5E0F7] bg-[#C8E9FA] py-14 sm:py-16 md:py-20 px-8 sm:px-12 md:px-16 relative overflow-hidden shadow-[0_2px_12px_rgba(7,26,73,0.03)]">
+        {/* Subtle abstract / organic background vector treatment */}
+        <div className="pointer-events-none absolute inset-0 z-0 opacity-40">
+          <svg
+            className="w-full h-full object-cover"
+            viewBox="0 0 1000 400"
+            fill="none"
+            preserveAspectRatio="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            {/* Soft organic contour waves */}
+            <path
+              d="M-50 220 C 150 120, 320 280, 520 180 C 720 80, 850 260, 1050 140"
+              stroke="#071A49"
+              strokeWidth="1.5"
+              strokeOpacity="0.14"
+              fill="none"
+            />
+            <path
+              d="M-50 260 C 180 160, 350 320, 550 220 C 750 120, 880 300, 1050 180"
+              stroke="#FFFFFF"
+              strokeWidth="2"
+              strokeOpacity="0.65"
+              fill="none"
+            />
+            <path
+              d="M-50 180 C 120 80, 290 240, 490 140 C 690 40, 820 220, 1050 100"
+              stroke="#071A49"
+              strokeWidth="1"
+              strokeOpacity="0.1"
+              fill="none"
+            />
+            <path
+              d="M-50 300 C 200 200, 380 360, 580 260 C 780 160, 910 340, 1050 220"
+              stroke="#FFFFFF"
+              strokeWidth="1.5"
+              strokeOpacity="0.5"
+              fill="none"
+            />
+            {/* Delicate organic topographic ripples */}
+            <circle cx="820" cy="200" r="160" stroke="#071A49" strokeWidth="1" strokeOpacity="0.08" />
+            <circle cx="820" cy="200" r="110" stroke="#FFFFFF" strokeWidth="1.5" strokeOpacity="0.4" />
+            <circle cx="820" cy="200" r="60" stroke="#071A49" strokeWidth="1" strokeOpacity="0.08" />
+          </svg>
+        </div>
+
+        {/* Content with plenty of whitespace and clean navy typography */}
+        <div className="relative z-10 max-w-3xl space-y-6">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-navy-800/80">
+            <span className="w-1.5 h-1.5 rounded-full bg-navy-900 inline-block"></span>
+            <span>Advisory Architecture · Policy Clause Verification</span>
+          </div>
+
+          <h2 className="font-serif text-2xl sm:text-3xl md:text-4xl font-normal text-navy-900 leading-[1.2] tracking-tight">
+            Bridging corporate exposure with verified underwriter reality.
+          </h2>
+
+          <p className="text-sm sm:text-base text-navy-900/80 font-normal leading-relaxed max-w-2xl">
+            Every numerical benefit limit, proportionate rent deduction, and waiting period waiver is algorithmically benchmarked against prevailing group terms. Providing corporate advisors with an auditable factual foundation prior to placement negotiations.
+          </p>
+
+          <div className="pt-4 border-t border-[#A8DEF7]/60 grid grid-cols-1 sm:grid-cols-3 gap-6 text-xs text-navy-900">
+            <div>
+              <span className="font-bold block text-navy-900 font-sans text-sm">100% Traceable</span>
+              <span className="text-navy-800/75 mt-0.5 block leading-normal">
+                Verifiable citations cited to source document and page number.
+              </span>
+            </div>
+            <div>
+              <span className="font-bold block text-navy-900 font-sans text-sm">Algorithmic Match</span>
+              <span className="text-navy-800/75 mt-0.5 block leading-normal">
+                TF-IDF vector matching against top underwriter schedules.
+              </span>
+            </div>
+            <div>
+              <span className="font-bold block text-navy-900 font-sans text-sm">Zero Fabrication</span>
+              <span className="text-navy-800/75 mt-0.5 block leading-normal">
+                Deterministic exposure modeling without arbitrary estimates.
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Main Two-Column Input Section */}
-      <div className="pt-12 md:pt-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
+      <div className="pt-6 md:pt-8 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
         {/* Left Side: Client Configuration */}
         <div className="lg:col-span-7 space-y-8">
           <div>
@@ -70,10 +155,10 @@ export default function GeneratePage({
               value={companyName}
               onChange={(e) => onCompanyNameChange(e.target.value)}
               placeholder="e.g. Tata Consultancy Services, Infosys, Reliance Industries…"
-              className="w-full rounded border border-ivory-300 bg-white px-4 py-3.5 text-sm text-navy-900 placeholder:text-muted/60 focus:border-navy-900 focus:outline-none transition shadow-subtle"
+              className="w-full rounded border border-ivory-300 bg-white px-4 py-3.5 text-sm text-navy-900 placeholder:text-muted/60 focus:border-navy-900 focus:ring-2 focus:ring-[#C8E9FA]/60 focus:outline-none transition shadow-subtle"
             />
 
-            {/* Suggested Companies as Simple Outlined Pills */}
+            {/* Suggested Companies as Simple Outlined Pills with connected subtle blue accents */}
             <div className="pt-1">
               <span className="text-xs text-muted block mb-2">Suggested companies:</span>
               <div className="flex flex-wrap gap-2">
@@ -86,8 +171,8 @@ export default function GeneratePage({
                       onClick={() => onCompanyNameChange(name)}
                       className={`rounded-full border px-3 py-1 text-xs font-normal transition ${
                         active
-                          ? "border-navy-900 bg-navy-900 text-white"
-                          : "border-ivory-300 bg-white text-muted-dark hover:border-navy-900 hover:text-navy-900"
+                          ? "border-navy-900 bg-navy-900 text-white ring-2 ring-[#C8E9FA]"
+                          : "border-ivory-300 bg-white text-muted-dark hover:border-[#A8DEF7] hover:bg-[#F0F9FD] hover:text-navy-900"
                       }`}
                     >
                       {name}
@@ -108,7 +193,7 @@ export default function GeneratePage({
               <button
                 type="button"
                 onClick={() => setDropdownOpen((o) => !o)}
-                className="flex w-full items-center justify-between rounded border border-ivory-300 bg-white px-4 py-3.5 text-left text-sm text-navy-900 shadow-subtle hover:border-navy-900 transition"
+                className="flex w-full items-center justify-between rounded border border-ivory-300 bg-white px-4 py-3.5 text-left text-sm text-navy-900 shadow-subtle hover:border-[#A8DEF7] hover:bg-[#F2F9FD]/50 transition"
               >
                 <span className="truncate">{dropdownLabel}</span>
                 <span className="text-xs text-muted ml-2">{dropdownOpen ? "▲" : "▼"}</span>
@@ -141,7 +226,7 @@ export default function GeneratePage({
                       const checked = selected.includes(ins.name);
                       return (
                         <li key={ins.name}>
-                          <label className="flex items-center gap-3 p-2 rounded hover:bg-ivory-100 cursor-pointer text-xs text-navy-900">
+                          <label className="flex items-center gap-3 p-2 rounded hover:bg-[#F0F9FD] cursor-pointer text-xs text-navy-900 transition">
                             <input
                               type="checkbox"
                               checked={checked}
@@ -191,7 +276,7 @@ export default function GeneratePage({
               handleFiles(e.dataTransfer.files);
             }}
             className={`border rounded p-8 text-center transition bg-white ${
-              dragOver ? "border-navy-900 bg-ivory-50" : "border-ivory-300 hover:border-navy-900/50"
+              dragOver ? "border-navy-900 bg-[#F0F9FD]" : "border-ivory-300 hover:border-[#A8DEF7]"
             }`}
           >
             <input
@@ -219,7 +304,7 @@ export default function GeneratePage({
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploading}
-                  className="rounded border border-ivory-300 bg-white px-4 py-2 text-xs font-semibold text-navy-900 hover:border-navy-900 transition disabled:opacity-50"
+                  className="rounded border border-ivory-300 bg-white px-4 py-2 text-xs font-semibold text-navy-900 hover:border-[#A8DEF7] hover:bg-[#F0F9FD] transition disabled:opacity-50"
                 >
                   {uploading ? "Extracting clauses..." : "Choose PDF"}
                 </button>
@@ -238,7 +323,7 @@ export default function GeneratePage({
                 {uploadedFiles.map((file, idx) => (
                   <div
                     key={idx}
-                    className="flex items-center justify-between text-xs text-navy-900 bg-ivory-50 p-2 rounded border border-ivory-200"
+                    className="flex items-center justify-between text-xs text-navy-900 bg-[#F2F9FD] p-2 rounded border border-[#C8E9FA]"
                   >
                     <span className="truncate max-w-[200px]">{file.name}</span>
                     <span className="text-muted text-[11px] font-mono">
@@ -268,7 +353,7 @@ export default function GeneratePage({
         <button
           type="button"
           onClick={onGenerate}
-          className="rounded-md border border-navy-900 bg-navy-900 px-8 py-3.5 text-sm font-medium text-white hover:bg-navy-800 transition flex items-center gap-2 shadow-subtle"
+          className="rounded-md border border-navy-900 bg-navy-900 px-8 py-3.5 text-sm font-medium text-white hover:bg-navy-800 hover:shadow-[0_2px_12px_rgba(200,233,250,0.6)] transition flex items-center gap-2 shadow-subtle"
         >
           <span>Generate Executive Pitch</span>
           <span>&rarr;</span>

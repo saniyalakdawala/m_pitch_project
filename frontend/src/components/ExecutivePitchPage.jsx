@@ -147,7 +147,7 @@ export default function ExecutivePitchPage({
             type="button"
             onClick={onExport}
             disabled={exporting}
-            className="rounded border border-navy-900 bg-navy-900 px-4 py-2 text-xs font-semibold text-white hover:bg-navy-800 transition shadow-subtle disabled:opacity-50 flex items-center gap-1.5"
+            className="rounded border border-navy-900 bg-navy-900 px-4 py-2 text-xs font-semibold text-white hover:bg-navy-800 hover:shadow-[0_2px_10px_rgba(200,233,250,0.5)] transition shadow-subtle disabled:opacity-50 flex items-center gap-1.5"
             title="Download executive PowerPoint slide deck (.pptx)"
           >
             <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -159,7 +159,7 @@ export default function ExecutivePitchPage({
           <button
             type="button"
             onClick={() => window.print()}
-            className="rounded border border-ivory-300 bg-white px-4 py-2 text-xs font-medium text-navy-900 hover:border-navy-900 transition shadow-subtle flex items-center gap-1.5"
+            className="rounded border border-ivory-300 bg-white px-4 py-2 text-xs font-medium text-navy-900 hover:border-[#A8DEF7] hover:bg-[#F0F9FD] transition shadow-subtle flex items-center gap-1.5"
             title="Print or save as high-fidelity PDF document"
           >
             <svg className="w-3.5 h-3.5 text-muted-dark" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -171,7 +171,7 @@ export default function ExecutivePitchPage({
           <button
             type="button"
             onClick={onNewPitch}
-            className="rounded border border-ivory-300 bg-white px-3.5 py-2 text-xs font-medium text-muted-dark hover:text-navy-900 hover:border-navy-900 transition shadow-subtle"
+            className="rounded border border-ivory-300 bg-white px-3.5 py-2 text-xs font-medium text-muted-dark hover:text-navy-900 hover:border-[#A8DEF7] hover:bg-[#F0F9FD] transition shadow-subtle"
           >
             Start New Analysis
           </button>
@@ -691,8 +691,8 @@ export default function ExecutivePitchPage({
                 onClick={() => setActiveClauseFilter(f)}
                 className={`px-2.5 py-1 rounded text-[11px] font-medium transition ${
                   activeClauseFilter === f
-                    ? "bg-navy-900 text-white font-semibold"
-                    : "bg-white border border-ivory-300 text-muted-dark hover:border-navy-900"
+                    ? "bg-navy-900 text-white font-semibold ring-2 ring-[#C8E9FA]"
+                    : "bg-white border border-ivory-300 text-muted-dark hover:border-[#A8DEF7] hover:bg-[#F0F9FD]"
                 }`}
               >
                 {f.charAt(0).toUpperCase() + f.slice(1)}
@@ -732,7 +732,7 @@ export default function ExecutivePitchPage({
                         : null;
 
                     return (
-                      <tr key={idx} className="hover:bg-ivory-50/50 transition">
+                      <tr key={idx} className="hover:bg-[#F2F9FD]/60 transition">
                         <td className="py-3.5 px-4 sm:px-6 font-semibold text-navy-900 align-top">
                           {item.clause}
                         </td>
@@ -857,16 +857,24 @@ export default function ExecutivePitchPage({
           ========================================================================= */}
       {executiveInsight && (
         <section className="py-12 border-b border-ivory-300">
-          <div className="border border-ivory-300 bg-white p-6 sm:p-8 rounded shadow-subtle relative overflow-hidden">
-            <div className="w-1.5 h-full bg-navy-900 absolute left-0 top-0"></div>
-            <div className="pl-2 space-y-3">
-              <span className="text-xs font-bold uppercase tracking-widest text-muted block">
+          <div className="border border-[#B5E0F7] bg-[#C8E9FA] p-8 sm:p-10 rounded-2xl shadow-[0_2px_12px_rgba(7,26,73,0.03)] relative overflow-hidden">
+            {/* Subtle organic vector background */}
+            <div className="pointer-events-none absolute inset-0 z-0 opacity-40">
+              <svg className="w-full h-full object-cover" viewBox="0 0 1000 300" fill="none" preserveAspectRatio="none">
+                <path d="M-50 180 C 150 90, 320 220, 520 140 C 720 60, 850 200, 1050 110" stroke="#071A49" strokeWidth="1.5" strokeOpacity="0.14" fill="none" />
+                <path d="M-50 210 C 180 120, 350 250, 550 170 C 750 90, 880 230, 1050 140" stroke="#FFFFFF" strokeWidth="2" strokeOpacity="0.65" fill="none" />
+                <circle cx="850" cy="150" r="100" stroke="#071A49" strokeWidth="1" strokeOpacity="0.08" />
+                <circle cx="850" cy="150" r="60" stroke="#FFFFFF" strokeWidth="1.5" strokeOpacity="0.4" />
+              </svg>
+            </div>
+            <div className="relative z-10 space-y-3">
+              <span className="text-xs font-bold uppercase tracking-widest text-navy-800/80 block">
                 Executive Insight
               </span>
-              <p className="text-base sm:text-lg text-navy-900 font-serif leading-relaxed italic">
+              <p className="text-lg sm:text-xl text-navy-900 font-serif leading-relaxed italic">
                 &ldquo;{executiveInsight}&rdquo;
               </p>
-              <div className="pt-2 text-xs text-muted flex items-center gap-2">
+              <div className="pt-2 text-xs text-navy-800/80 flex items-center gap-2">
                 <span className="font-semibold text-navy-900">Marsh Advisory</span>
                 <span>·</span>
                 <span>Corporate Health &amp; Benefits Placement Practice</span>
