@@ -19,10 +19,10 @@ import json
 import os
 import re
 
-DEFAULT_MODEL = os.environ.get("GROQ_MODEL", "llama3-70b-8192")
+DEFAULT_MODEL = os.environ.get("GROQ_MODEL", "qwen/qwen3.8-27b")
 # Groq periodically retires older model ids; if the pinned model 404s we
 # retry once against this safe current default rather than failing outright.
-FALLBACK_MODEL = "llama-3.3-70b-versatile"
+FALLBACK_MODEL = "qwen/qwen3.8-27b"
 
 _client = None
 _client_init_failed = False

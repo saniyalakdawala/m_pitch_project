@@ -9,8 +9,8 @@ import {
   generatePitch,
   exportPptx,
   fetchAnalysis,
+  fetchSampleAnalysis,
 } from "./api.js";
-import { SAMPLE_PITCH_DATA } from "./mockData.js";
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState("generate"); // "generate" | "loading" | "pitch"
@@ -41,14 +41,11 @@ export default function App() {
 
       // If we don't already have this result loaded
       if (!result || result.analysis_id !== id) {
-        if (id === SAMPLE_PITCH_DATA.analysis_id) {
-          setResult(SAMPLE_PITCH_DATA);
-          setCurrentPage("pitch");
-          return;
-        }
-
         try {
-          const data = await fetchAnalysis(id);
+          const data =
+            id === "analysis_tcs_sample_2026"
+              ? await fetchSampleAnalysis()
+              : await fetchAnalysis(id);
           setResult(data);
           setCurrentPage("pitch");
         } catch (err) {
@@ -158,18 +155,26 @@ export default function App() {
     }
   }
 
-  function handleLoadSample() {
-    setCompanyName(SAMPLE_PITCH_DATA.client.name);
+  async function handleLoadSample() {
+    setCompanyName("Tata Consultancy Services");
     setGenError(null);
     setCurrentPage("loading");
 
-    setTimeout(() => {
-      setResult(SAMPLE_PITCH_DATA);
-      setCurrentAnalysisId(SAMPLE_PITCH_DATA.analysis_id);
-      window.location.hash = `#/executive-pitch/${SAMPLE_PITCH_DATA.analysis_id}`;
-      setCurrentPage("pitch");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }, 1800);
+    try {
+      const data = await fetchSampleAnalysis();
+      const analysisId = data.analysis_id || "analysis_tcs_sample_2026";
+      setTimeout(() => {
+        setResult(data);
+        setCurrentAnalysisId(analysisId);
+        window.location.hash = `#/executive-pitch/${analysisId}`;
+        setCurrentPage("pitch");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 1500);
+    } catch (err) {
+      console.warn("Could not load sample analysis:", err);
+      setGenError(`Could not load sample analysis: ${err.message || "Backend unreachable"}`);
+      setCurrentPage("generate");
+    }
   }
 
   function handleNewPitch() {

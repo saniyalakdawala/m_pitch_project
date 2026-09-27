@@ -8,11 +8,20 @@ from __future__ import annotations
 import re
 from typing import Any, Optional
 
-# Match Indian rupee amounts: e.g. ₹5,00,000, Rs. 10 Lakh, INR 1 Crore, ₹75,000
+# Match Indian rupee amounts: e.g. ₹5,00,000, Rs. 10 Lakh, INR 1 Crore, ₹75,000, `15 Lakh
 _INR_NUMERIC_RE = re.compile(
-    r"(?:₹|Rs\.?|INR)\s*([\d,]+(?:\.\d+)?)\s*(crores?|cr|lakhs?|lacs?|lac|l|k)?\b",
+    r"(?:₹|Rs\.?|INR|`)\s*([\d,]+(?:\.\d+)?)\s*(crores?|cr|lakhs?|lacs?|lac|l|k)?\b",
     re.I,
 )
+
+# Match slashed lists like 10/15/20/25/50/100/200 Lakhs or 5L/ 7L/ 10L
+_SLASHED_NUMERIC_RE = re.compile(
+    r"(?:(?:₹|Rs\.?|INR|`)\s*)?((?:\d+(?:L|Cr)?\s*/\s*)+\d+(?:L|Cr)?)\s*(lakhs?|lacs?|lac|crores?|cr)?",
+    re.I,
+)
+
+# Standalone word amounts: e.g. "10 lakhs", "1 Crore"
+_WORD_AMT_RE = re.compile(r"\b([\d,]+(?:\.\d+)?)\s*(crores?|cr|lakhs?|lacs?)\b", re.I)
 
 # Match percentages: e.g. 10%, 20%
 _PERCENT_RE = re.compile(r"(\d+(?:\.\d+)?)\s*%", re.I)
@@ -68,24 +77,91 @@ def format_inr(val: Optional[float]) -> str:
     return f"₹{val:.0f}"
 
 
+def classify_figure(text: str, start: int, end: int) -> str:
+    """Classify the financial figure into an insurance policy category based on textual context."""
+    window = text[max(0, start - 80) : min(len(text), end + 80)].lower()
+    if any(k in window for k in ["sum insured", "base sum", "base cover", "si ", " si", "optima secure", "benefit ceiling", "coverage of", "maximum limit"]):
+        return "sum_insured"
+    if any(k in window for k in ["room rent", "daily cash", "room boarding", "nursing charges", "icu"]):
+        return "room_rent_limit"
+    if any(k in window for k in ["maternity", "delivery", "normal delivery", "caesarean", "c-section", "newborn"]):
+        return "maternity_limit"
+    if any(k in window for k in ["deductible", "copay", "co-pay", "co-payment", "voluntary excess"]):
+        return "deductible"
+    if any(k in window for k in ["ambulance", "road ambulance", "air ambulance"]):
+        return "ambulance_limit"
+    if any(k in window for k in ["premium", "discount", "tax deduction"]):
+        return "premium"
+    return "general_limit"
+
+
 def extract_figures_from_text(text: str, source_doc: str, page: Optional[int]) -> list[dict[str, Any]]:
-    """Scan clause text for verifiable financial terms and retain provenance."""
-    figures = []
+    """Scan clause text for verifiable financial terms, categorize them, and retain provenance."""
+    figures: list[dict[str, Any]] = []
     if not text:
         return figures
 
-    for match in _INR_NUMERIC_RE.finditer(text):
-        amt_str, mult = match.groups()
+    seen: set[tuple[float, str]] = set()
+
+    # 1. Slashed tiers (e.g. 10/15/20/25/50/100/200 Lakhs, 5L/ 7L/ 10L/ 15L/ 25L/ 50L/ 100L)
+    for m in _SLASHED_NUMERIC_RE.finditer(text):
+        items_str, unit = m.groups()
+        unit = unit or ""
+        fig_type = classify_figure(text, m.start(), m.end())
+        for p in items_str.split("/"):
+            mp = re.match(r"(\d+(?:\.\d+)?)\s*(L|Cr)?", p.strip(), re.I)
+            if mp:
+                num, u_p = mp.groups()
+                final_u = u_p or unit
+                parsed = parse_inr_amount(num, final_u)
+                if parsed and parsed > 0 and (parsed, fig_type) not in seen:
+                    seen.add((parsed, fig_type))
+                    figures.append({
+                        "amount": parsed,
+                        "formatted": format_inr(parsed),
+                        "currency": "INR",
+                        "type": fig_type,
+                        "raw_match": m.group(0).strip(),
+                        "source": source_doc,
+                        "page": page,
+                    })
+
+    # 2. Direct currency matches (e.g. ₹5,00,000, Rs. 10 Lakh, INR 1 Crore, `15 Lakh)
+    for m in _INR_NUMERIC_RE.finditer(text):
+        amt_str, mult = m.groups()
         parsed = parse_inr_amount(amt_str, mult)
         if parsed and parsed > 0:
-            figures.append({
-                "amount": parsed,
-                "formatted": format_inr(parsed),
-                "currency": "INR",
-                "raw_match": match.group(0).strip(),
-                "source": source_doc,
-                "page": page,
-            })
+            fig_type = classify_figure(text, m.start(), m.end())
+            if (parsed, fig_type) not in seen:
+                seen.add((parsed, fig_type))
+                figures.append({
+                    "amount": parsed,
+                    "formatted": format_inr(parsed),
+                    "currency": "INR",
+                    "type": fig_type,
+                    "raw_match": m.group(0).strip(),
+                    "source": source_doc,
+                    "page": page,
+                })
+
+    # 3. Word amounts (e.g. 10 lakhs, 1 Crore)
+    for m in _WORD_AMT_RE.finditer(text):
+        amt_str, mult = m.groups()
+        parsed = parse_inr_amount(amt_str, mult)
+        if parsed and parsed > 0:
+            fig_type = classify_figure(text, m.start(), m.end())
+            if (parsed, fig_type) not in seen:
+                seen.add((parsed, fig_type))
+                figures.append({
+                    "amount": parsed,
+                    "formatted": format_inr(parsed),
+                    "currency": "INR",
+                    "type": fig_type,
+                    "raw_match": m.group(0).strip(),
+                    "source": source_doc,
+                    "page": page,
+                })
+
     return figures
 
 
@@ -195,24 +271,53 @@ def compute_structured_analysis(
             })
 
     # 3. Derive Financial Snapshot if policy amounts were legitimately parsed
-    # Look for sum insured or high-value coverage terms in extracted figures
+    # Identify baseline insurer and recommended insurer from comparator
+    ranking = comparator.get("ranking", []) if comparator else []
+    base_insurer = ranking[-1].get("insurer") if len(ranking) > 1 else None
+
+    # Filter sum insured figures with provenance
+    base_si = [
+        f["amount"] for f in extracted_figures
+        if (f.get("source") == base_insurer or len(ranking) <= 1) and f.get("type") == "sum_insured" and f["amount"] >= 100_000
+    ]
+    rec_si = [
+        f["amount"] for f in extracted_figures
+        if f.get("source") == rec_insurer and f.get("type") == "sum_insured" and f["amount"] >= 100_000
+    ]
+    all_si = [
+        f["amount"] for f in extracted_figures
+        if f.get("type") == "sum_insured" and f["amount"] >= 100_000
+    ]
+
     current_coverage: Optional[float] = None
     estimated_exposure: Optional[float] = None
-    
-    # Check if sum insured was extracted from comparator or clauses
-    amounts = sorted([f["amount"] for f in extracted_figures if f["amount"] >= 50_000], reverse=True)
-    if amounts:
-        # Highest extracted limit can represent maximum policy benefit ceiling
-        current_coverage = float(amounts[0])
-        # Benchmark estimated exposure is calculated based on corporate tier
-        if current_coverage <= 100_000:
-            estimated_exposure = current_coverage * 2.0
-        elif current_coverage <= 500_000:
-            estimated_exposure = current_coverage * 1.5
-        elif current_coverage <= 10_000_000:
-            estimated_exposure = current_coverage * 1.3
+
+    if base_si and rec_si:
+        # Standard corporate sum insured tier from baseline underwriter
+        current_coverage = max(base_si)
+        higher_tiers = [amt for amt in rec_si if amt > current_coverage]
+        if higher_tiers:
+            estimated_exposure = min(higher_tiers[0], current_coverage * 1.25)
         else:
             estimated_exposure = current_coverage * 1.25
+    elif all_si:
+        sorted_si = sorted(list(set(all_si)))
+        if len(sorted_si) >= 2:
+            current_coverage = float(sorted_si[-2])
+            estimated_exposure = float(sorted_si[-1])
+        else:
+            current_coverage = float(sorted_si[0])
+            estimated_exposure = current_coverage * 1.25
+    else:
+        # Check any monetary figures >= 100_000 in cited clauses
+        gen_amts = sorted([f["amount"] for f in extracted_figures if f["amount"] >= 100_000], reverse=True)
+        if gen_amts:
+            current_coverage = float(gen_amts[0])
+            estimated_exposure = current_coverage * 1.25
+        else:
+            # Genuine policy without quantitative financial limits
+            current_coverage = None
+            estimated_exposure = None
 
     coverage_gap: Optional[float] = None
     uninsured_exposure: Optional[float] = None

@@ -111,11 +111,56 @@ async def company_profile(body: CompanyProfileRequest):
 
 from app.services.financial_extractor import compute_structured_analysis
 
+SAMPLE_ANALYSIS_ID = "analysis_tcs_sample_2026"
+
+
+async def _build_or_get_sample_analysis() -> dict:
+    if SAMPLE_ANALYSIS_ID in _last_results:
+        return _last_results[SAMPLE_ANALYSIS_ID]
+
+    name = "Tata Consultancy Services"
+    insurers = ["HDFC Ergo Health Insurance", "Care Health Insurance"]
+    profile = await generate_company_profile(name)
+    pitch = await generate_marketing_pitch(name, profile, insurers)
+    audit_report = await audit_pitch_content_async(pitch["slides"], store.get_index())
+
+    eval_chunks = [c for c in store.all_chunks() if c.get("insurer") in insurers]
+    structured = compute_structured_analysis(
+        company_name=name,
+        company_profile=profile,
+        pitch=pitch,
+        audit_report=audit_report,
+        all_clauses=eval_chunks or store.all_chunks(),
+    )
+
+    response_payload = {
+        "analysis_id": SAMPLE_ANALYSIS_ID,
+        "resultId": SAMPLE_ANALYSIS_ID,
+        **structured,
+        "pitch": pitch,
+        "auditReport": audit_report,
+    }
+    _cache_result(SAMPLE_ANALYSIS_ID, response_payload)
+    return response_payload
+
+
+@router.get("/sample-analysis")
+async def get_sample_analysis():
+    try:
+        return await _build_or_get_sample_analysis()
+    except Exception as exc:  # noqa: BLE001
+        raise HTTPException(status_code=500, detail=f"Failed to generate sample analysis: {exc}") from exc
+
 
 @router.get("/analysis/{analysis_id}")
 async def get_analysis(analysis_id: str):
     if analysis_id in _last_results:
         return _last_results[analysis_id]
+    if analysis_id == SAMPLE_ANALYSIS_ID:
+        try:
+            return await _build_or_get_sample_analysis()
+        except Exception as exc:  # noqa: BLE001
+            raise HTTPException(status_code=500, detail=f"Failed to retrieve sample analysis: {exc}") from exc
     raise HTTPException(status_code=404, detail=f"No analysis record found for ID '{analysis_id}'.")
 
 
@@ -143,12 +188,13 @@ async def generate_pitch(body: GeneratePitchRequest):
         analysis_id = f"analysis_{int(time.time() * 1000)}"
         
         # Build strict structured analysis based on verified policy and company data
+        eval_chunks = [c for c in store.all_chunks() if c.get("insurer") in body.insurers]
         structured = compute_structured_analysis(
             company_name=name,
             company_profile=effective_profile,
             pitch=pitch,
             audit_report=audit_report,
-            all_clauses=store.all_chunks(),
+            all_clauses=eval_chunks or store.all_chunks(),
         )
 
         response_payload = {

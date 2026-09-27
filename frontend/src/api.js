@@ -54,6 +54,11 @@ export async function fetchAnalysis(analysisId) {
   return handle(res);
 }
 
+export async function fetchSampleAnalysis() {
+  const res = await fetch(`${BASE}/sample-analysis`);
+  return handle(res);
+}
+
 export async function exportPptx(analysisData) {
   const res = await fetch(`${BASE}/export-pptx`, {
     method: "POST",
