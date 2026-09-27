@@ -134,8 +134,10 @@ async def _phrase_claim(clause_text: str, context: str) -> str:
     LLM key is configured or the call fails."""
     prompt = (
         "Rewrite the following insurance policy clause as ONE short, client-facing "
-        "pitch bullet (max 28 words). CRITICAL: preserve every exact number, "
-        "percentage, rupee/currency amount, and day/month/year count exactly as "
+        "pitch bullet (max 28 words). CRITICAL: Use only financial figures supplied in the structured analysis. "
+        "Never create or estimate financial values unless the input explicitly requests scenario analysis. "
+        "If a value is unavailable, state that it is unavailable. "
+        "Preserve every exact number, percentage, rupee/currency amount, and day/month/year count exactly as "
         "written in the clause (e.g. \"100% of sum insured\", \"60 days pre-hospitalization\", "
         "\"\u20b910,000 ambulance cover\") - do NOT generalize numbers away into vague phrases like "
         "\"generous cover\" or \"extended period\". Do not add any fact, number, or benefit that "
@@ -145,6 +147,7 @@ async def _phrase_claim(clause_text: str, context: str) -> str:
     )
     text = await llm.complete(prompt, max_tokens=90, temperature=0.2)
     return _clean_ws(text) if text else truncate_clause(clause_text, 190)
+
 
 
 async def generate_marketing_pitch(company_name: str, profile: dict, insurers: list[str] | None) -> dict[str, Any]:

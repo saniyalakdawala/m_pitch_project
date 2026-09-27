@@ -109,6 +109,16 @@ async def company_profile(body: CompanyProfileRequest):
         raise HTTPException(status_code=500, detail=f"Failed to generate company profile: {exc}") from exc
 
 
+from app.services.financial_extractor import compute_structured_analysis
+
+
+@router.get("/analysis/{analysis_id}")
+async def get_analysis(analysis_id: str):
+    if analysis_id in _last_results:
+        return _last_results[analysis_id]
+    raise HTTPException(status_code=404, detail=f"No analysis record found for ID '{analysis_id}'.")
+
+
 @router.post("/generate-pitch")
 async def generate_pitch(body: GeneratePitchRequest):
     name = body.companyName.strip()
@@ -130,14 +140,32 @@ async def generate_pitch(body: GeneratePitchRequest):
         pitch = await generate_marketing_pitch(name, effective_profile, body.insurers)
         audit_report = await audit_pitch_content_async(pitch["slides"], store.get_index())
 
-        result_id = f"pitch_{int(time.time() * 1000)}"
-        _cache_result(result_id, {"pitch": pitch, "auditReport": audit_report})
+        analysis_id = f"analysis_{int(time.time() * 1000)}"
+        
+        # Build strict structured analysis based on verified policy and company data
+        structured = compute_structured_analysis(
+            company_name=name,
+            company_profile=effective_profile,
+            pitch=pitch,
+            audit_report=audit_report,
+            all_clauses=store.all_chunks(),
+        )
 
-        return {"resultId": result_id, "pitch": pitch, "auditReport": audit_report}
+        response_payload = {
+            "analysis_id": analysis_id,
+            "resultId": analysis_id,
+            **structured,
+            "pitch": pitch,
+            "auditReport": audit_report,
+        }
+
+        _cache_result(analysis_id, response_payload)
+        return response_payload
     except HTTPException:
         raise
     except Exception as exc:  # noqa: BLE001
         raise HTTPException(status_code=500, detail=f"Pitch generation failed: {exc}") from exc
+
 
 
 @router.post("/audit")

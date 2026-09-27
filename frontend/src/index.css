@@ -2,10 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #root {
-  height: 100%;
+@layer base {
+  html, body, #root {
+    min-height: 100%;
+  }
+
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: #F7F5F0;
+    color: #071A49;
+  }
+
+  /* Editorial Print/Clean Scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #F7F5F0;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #DCD6CC;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #5C6880;
+  }
 }
 
-body {
-  -webkit-font-smoothing: antialiased;
+/* Subtle print media styles */
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .no-print {
+    display: none !important;
+  }
 }

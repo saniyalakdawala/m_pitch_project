@@ -49,11 +49,20 @@ export async function generatePitch({ companyName, profile, insurers }) {
   return handle(res);
 }
 
-export async function exportPptx({ resultId, pitch, auditReport }) {
+export async function fetchAnalysis(analysisId) {
+  const res = await fetch(`${BASE}/analysis/${encodeURIComponent(analysisId)}`);
+  return handle(res);
+}
+
+export async function exportPptx(analysisData) {
   const res = await fetch(`${BASE}/export-pptx`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ resultId, pitch, auditReport }),
+    body: JSON.stringify({
+      resultId: analysisData.resultId || analysisData.analysis_id,
+      pitch: analysisData.pitch,
+      auditReport: analysisData.auditReport,
+    }),
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
@@ -61,3 +70,4 @@ export async function exportPptx({ resultId, pitch, auditReport }) {
   }
   return res.blob();
 }
+

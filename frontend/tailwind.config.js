@@ -4,28 +4,43 @@ export default {
   theme: {
     extend: {
       colors: {
-        navy: {
-          50: "#e6eef5",
-          100: "#c0d5e6",
-          200: "#96b9d5",
-          300: "#6a9cc3",
-          400: "#4a86b6",
-          500: "#2f70a8",
-          600: "#005587",
-          700: "#004570",
-          800: "#00375a",
-          900: "#022544",
+        ivory: {
+          50: "#FAF9F6",
+          100: "#F7F5F0", // primary warm ivory background
+          200: "#EFECE6",
+          300: "#E5E0D8", // thin subtle borders
+          400: "#DCD6CC",
         },
-        slate: {
-          25: "#f8fafc",
+        navy: {
+          50: "#F2F5FA",
+          100: "#E4EBF5",
+          200: "#C8D7EB",
+          300: "#9FBCE0",
+          400: "#5D8EC7",
+          500: "#007CA6",
+          600: "#005587", // Marsh Brand Blue
+          700: "#17347A",
+          800: "#0E255F",
+          900: "#071A49", // deep navy primary text / CTA button
+          950: "#040E28",
+        },
+        muted: {
+          DEFAULT: "#5C6880",
+          light: "#7B869C",
+          dark: "#3E495E",
+        },
+        gold: {
+          500: "#996515", // understated gold only for audit badge
+          100: "#FBF5E8",
         },
       },
       fontFamily: {
-        sans: ["Inter", "Segoe UI", "Helvetica Neue", "Arial", "sans-serif"],
+        serif: ["'Playfair Display'", "'Newsreader'", "Georgia", "serif"],
+        sans: ["'Plus Jakarta Sans'", "Inter", "-apple-system", "sans-serif"],
       },
       boxShadow: {
-        card: "0 1px 2px rgba(15, 23, 42, 0.06), 0 1px 3px rgba(15, 23, 42, 0.08)",
-        panel: "0 4px 24px rgba(2, 37, 68, 0.08)",
+        subtle: "0 1px 3px rgba(7, 26, 73, 0.04), 0 1px 2px rgba(7, 26, 73, 0.02)",
+        card: "0 2px 8px rgba(7, 26, 73, 0.04)",
       },
     },
   },
