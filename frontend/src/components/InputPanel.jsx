@@ -255,7 +255,7 @@ export default function InputPanel({
             className="self-start md:self-auto inline-flex items-center gap-2 rounded-xl border border-gold-500/40 bg-gold-500/10 px-3.5 py-2 text-xs font-semibold text-gold-200 hover:bg-gold-500/20 transition shadow-sm"
           >
             <span className="text-gold-400">&#9733;</span>
-            <span>Load Executive Demo Deck (TCS)</span>
+            <span>Load Enterprise Placement (TCS)</span>
           </button>
         )}
       </div>

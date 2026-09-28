@@ -32,12 +32,6 @@ export default function Navigation({
         <div className="flex items-center gap-3">
           {!isResultsPage ? (
             <>
-              {/* Status */}
-              <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EBF7FD] text-navy-900 border border-[#B5E0F7] text-[11px] font-medium">
-                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
-                <span className="font-sans">Vector Matcher Active</span>
-              </div>
-
               {/* Sample Deck CTA */}
               {onLoadSample && (
                 <button
@@ -50,15 +44,14 @@ export default function Navigation({
               )}
             </>
           ) : (
-            <div className="flex items-center gap-2 text-xs text-muted">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-600" />
-              <span className="font-sans hidden sm:inline">Analysis Synced</span>
+            <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={onNewPitch}
-                className="text-xs font-medium text-navy-900 hover:text-navy-600 underline ml-2"
+                className="rounded border border-ivory-300 bg-white px-3.5 py-1.5 text-xs font-medium text-navy-900 hover:border-[#A8DEF7] hover:bg-[#F0F9FD] transition shadow-subtle flex items-center gap-1.5"
               >
-                &larr; New Analysis
+                <span>&larr;</span>
+                <span>New Analysis</span>
               </button>
             </div>
           )}

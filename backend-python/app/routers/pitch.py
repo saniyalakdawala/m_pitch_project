@@ -139,6 +139,8 @@ async def _build_or_get_sample_analysis() -> dict:
         **structured,
         "pitch": pitch,
         "auditReport": audit_report,
+        "recommended": pitch.get("recommended"),
+        "recommendationReason": pitch.get("recommendationReason"),
     }
     _cache_result(SAMPLE_ANALYSIS_ID, response_payload)
     return response_payload
@@ -203,6 +205,8 @@ async def generate_pitch(body: GeneratePitchRequest):
             **structured,
             "pitch": pitch,
             "auditReport": audit_report,
+            "recommended": pitch.get("recommended"),
+            "recommendationReason": pitch.get("recommendationReason"),
         }
 
         _cache_result(analysis_id, response_payload)

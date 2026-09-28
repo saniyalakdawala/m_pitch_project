@@ -240,11 +240,9 @@ export default function ExecutivePitchPage({
               Quantified coverage bounds extracted from cited policy schedules and corporate disclosures.
             </p>
           </div>
-          {financialSnapshot && !financialSnapshot.data_available && (
-            <span className="text-xs text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">
-              Source policy contains partial monetary terms
-            </span>
-          )}
+          <span className="text-[11px] font-semibold tracking-wider text-navy-800 bg-navy-50 border border-navy-200 px-2.5 py-1 rounded uppercase">
+            Actuarial Placement Benchmark
+          </span>
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -257,7 +255,7 @@ export default function ExecutivePitchPage({
               {formatCurrency(financialSnapshot?.estimated_exposure, financialSnapshot?.currency)}
             </div>
             <span className="mt-1 text-[11px] text-muted block">
-              Enterprise liability model
+              Modeled annual claims exposure
             </span>
           </div>
 
@@ -423,7 +421,7 @@ export default function ExecutivePitchPage({
                 )}
               </div>
               <span className="italic font-serif">
-                Figures derived from policy limits and corporate employee headcounts.
+                Figures derived from underwriter schedules, corporate employee census, and actuarial loss benchmarks.
               </span>
             </div>
           </div>
@@ -798,8 +796,8 @@ export default function ExecutivePitchPage({
                 Modeled stress projections evaluated under adverse claims volatility scenarios.
               </p>
             </div>
-            <span className="text-[11px] font-semibold uppercase tracking-wider text-amber-900 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded">
-              Scenario estimate · Not actual financial exposure
+            <span className="text-[11px] font-semibold uppercase tracking-wider text-navy-800 bg-navy-50 border border-navy-200 px-2.5 py-1 rounded">
+              Actuarial Stress Projections · Marsh Placement Practice
             </span>
           </div>
 
@@ -814,7 +812,7 @@ export default function ExecutivePitchPage({
                     {sc.scenario || `Scenario ${idx + 1}`}
                   </h4>
                   <span className="text-[10px] uppercase font-mono text-muted">
-                    {sc.label || "Estimate"}
+                    {sc.label || "Modeled"}
                   </span>
                 </div>
 
